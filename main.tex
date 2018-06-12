@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage[parfill]{parskip} % new line between paragraphs, no indentation
+\usepackage{enumerate} % change the symbol of enumerate
+\usepackage{xcolor}
+\usepackage{soul} % highlight texts
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{bm} % bold Greek letters (and all other math symbols)
+
+% Header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}%Clear all heads and foots
+\setlength{\headheight}{35pt} %Eliminate the warning of "headheight is too samll"
+\rhead{Poisson Regression\\Jianzhao Bi\\\today}
+\cfoot{\thepage}
+
+\begin{document}
+
+\section{The Poisson Distribution}
+A random variable $Y$ is said to have a Poisson distribution with parameter $\mu$ if it takes integer values $y = 0, 1, 2, \ldots$ with probability
+\begin{equation}
+    P(Y=y)=\frac{e^{-\mu}\mu^y}{y!}
+\end{equation}
+for $\mu > 0$. 	$\mu$ can be interpreted as an average number of occurrences of a rare event per time period. The probability distribution of the number of occurrences of the event in a fixed time interval is Poisson with mean $\mu = \lambda t$, where $\lambda$ is the \textbf{rate} of occurrence of the event per unit of time and $t$ is the length of the time interval.
+
+The mean and variance of this distribution can be shown to be
+\begin{equation}
+    E(Y)=var(Y)=\mu
+\end{equation}
+
+Since the mean is equal to the variance, any factor that affects one will also affect the other. Thus, the usual assumption of homoscedasticity would not be appropriate for Poisson data.
+
+\section{Log-Linear Models: Poisson Regression}
+Suppose that we have a sample of $n$ observations $y_1,y_2,\ldots,y_n$ which can be treated as realizations of independent Poisson random variables, with $Y_i \sim P(\mu_i)$, and suppose that we want to let the mean $\mu_i$ (and therefore the variance!) depend on a vector of explanatory variables $\mathbf{x}_i$.
+
+We could entertain a simple linear model of the form
+\begin{equation}
+    \mu_i=\mathbf{x}^T_i\bm{\beta}
+\end{equation}
+but this model has the disadvantage that the linear predictor on the right hand side can assume any real value, whereas the Poisson mean on the left hand side, which represents an expected count, has to be non-negative.
+
+A straightforward solution to this problem is to model instead the \textit{logarithm} of the mean using a linear model
+\begin{equation}
+    \label{emu:log}
+    log(\mu_i)=\mathbf{x}^T_i\bm{\beta}
+\end{equation}
+In this model the regression coefficient $\beta_j$ represents the expected change in the log of the mean per unit change in the predictor $x_j$. In other words increasing $x_j$ by one unit is associated with an increase of $\beta_j$ in the log of the mean.
+
+Exponentiating Equation \ref{emu:log} we obtain a multiplicative model for the mean itself:
+\begin{equation}
+    \mu_i=exp(\mathbf{x}^T_i\bm{\beta})
+\end{equation}
+In this model, an exponentiated regression coefficient $exp(\beta_j)$ represents a multiplicative effect of the $j$-th predictor on the mean. Increasing $x_j$ by one unit multiplies the mean by a factor $exp(\beta_j)$.
+
+\section{Derivation of Rate Ratio}
+Assuming the rate before exposing to the pollutant $x$ is $\lambda_1$, and is $\lambda_2$ after the exposure. The time interval is $t$. So
+\begin{equation}
+       \begin{split}
+        \mu_1=\lambda_1 t \\
+        \mu_2=\lambda_2 t
+    \end{split}
+\end{equation}
+and the rate ratio is
+\begin{equation}
+    \frac{\lambda_2}{\lambda_1} = \frac{\mu_2}{\mu_1}
+\end{equation}
+The logarithm of this rate ratio when the exposure to the pollutant $x$ changes the $C_{IQR}$ of x
+\begin{equation}
+    \begin{split}
+        log(\frac{\mu_2}{\mu_1}) &= log(\mu_2) - log(\mu_1) \\
+        &= \beta (x + C_{IQR}) - \beta x \\
+        &= \beta x + \beta\cdot C_{IQR} - \beta x \\
+        &= \beta\cdot C_{IQR}
+    \end{split}
+\end{equation}
+So the rate ratio can be calculated by
+\begin{equation}
+    \frac{\mu_2}{\mu_1} = exp(\beta\cdot C_{IQR})
+\end{equation}
+ 
+
+\end{document}
